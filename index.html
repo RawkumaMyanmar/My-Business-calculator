@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mobile Business Pro</title>
+    <title>Mobile Business Pro - Monthly</title>
     <link href="https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,7 +18,7 @@
             background-color: #f1f5f9;
             margin: 0;
             padding: 10px;
-            padding-bottom: 100px; /* အောက်ခြေ Summary အတွက် နေရာချန် */
+            padding-bottom: 120px;
         }
 
         .header {
@@ -28,7 +28,16 @@
             color: white;
             border-radius: 15px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .filter-section {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .input-section {
@@ -42,13 +51,13 @@
         .form-group { margin-bottom: 12px; }
         label { display: block; font-size: 13px; color: #64748b; margin-bottom: 4px; }
         
-        input {
+        input, select {
             width: 100%;
             padding: 12px;
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             box-sizing: border-box;
-            font-size: 16px; /* Zoom မဖြစ်အောင် 16px သုံးရပါတယ် */
+            font-size: 16px;
             outline: none;
         }
 
@@ -61,59 +70,44 @@
             border-radius: 10px;
             font-weight: bold;
             font-size: 16px;
-            margin-top: 10px;
         }
 
-        /* Card Style Table for Mobile */
-        .list-container { margin-top: 20px; }
         .item-card {
             background: white;
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 10px;
-            position: relative;
             border-left: 5px solid var(--primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
         .card-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .item-name { font-weight: bold; font-size: 18px; color: #1e293b; }
-        .date-label { font-size: 12px; color: #94a3b8; }
         .stats { font-size: 14px; color: #475569; }
-        .profit-text { color: var(--success); font-weight: bold; font-size: 16px; }
+        .profit-text { color: var(--success); font-weight: bold; }
         
         .delete-btn {
-            background: #fee2e2;
-            color: var(--danger);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
+            background: #fee2e2; color: var(--danger);
+            border: none; padding: 5px 10px; border-radius: 5px;
         }
 
-        /* Fixed Bottom Bar */
         .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            border-top: 1px solid #e2e8f0;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; display: grid; grid-template-columns: 1fr 1fr 1fr;
+            padding: 15px; border-top: 1px solid #e2e8f0; text-align: center;
         }
 
-        .summary-item { text-align: center; }
-        .summary-label { font-size: 11px; color: #64748b; }
-        .summary-val { font-weight: bold; font-size: 16px; color: var(--primary); }
+        .summary-label { font-size: 10px; color: #64748b; }
+        .summary-val { font-weight: bold; font-size: 14px; color: var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h2 style="margin:0; font-size: 20px;">My Business Records</h2>
+    <h2 style="margin:0; font-size: 20px;">Business Records</h2>
+</div>
+
+<div class="filter-section">
+    <label style="margin:0;">လအလိုက်ကြည့်ရန်:</label>
+    <input type="month" id="monthFilter" style="width: 60%; padding: 5px;" onchange="renderList()">
 </div>
 
 <div class="input-section">
@@ -130,7 +124,7 @@
             <input type="number" id="stock" placeholder="0">
         </div>
         <div class="form-group">
-            <label>ရောင်းရ</label>
+            <label>ရောင်းရ (အရေအတွက်)</label>
             <input type="number" id="sale" placeholder="0">
         </div>
     </div>
@@ -147,16 +141,19 @@
     <button class="btn-save" onclick="addData()">သိမ်းဆည်းမည်</button>
 </div>
 
-<div id="recordList" class="list-container">
-    </div>
+<div id="recordList"></div>
 
 <div class="bottom-bar">
     <div class="summary-item">
-        <div class="summary-label">စုစုပေါင်း ရောင်းရငွေ</div>
+        <div class="summary-label">စုစုပေါင်း အထုပ်</div>
+        <div class="summary-val" id="totalQty">0</div>
+    </div>
+    <div class="summary-item">
+        <div class="summary-label">ရောင်းရငွေ</div>
         <div class="summary-val" id="totalRevenue">0</div>
     </div>
     <div class="summary-item">
-        <div class="summary-label">စုစုပေါင်း အမြတ်</div>
+        <div class="summary-label">အမြတ်</div>
         <div class="summary-val" id="totalProfit" style="color: var(--success);">0</div>
     </div>
 </div>
@@ -165,7 +162,11 @@
     let dataList = JSON.parse(localStorage.getItem('phoneBizData')) || [];
     
     window.onload = () => {
-        document.getElementById('date').valueAsDate = new Date();
+        const now = new Date();
+        document.getElementById('date').valueAsDate = now;
+        // လက်ရှိလကို Filter မှာ Default ပြထားမယ် (YYYY-MM format)
+        const currentMonth = now.toISOString().substring(0, 7);
+        document.getElementById('monthFilter').value = currentMonth;
         renderList();
     };
 
@@ -181,21 +182,21 @@
 
         const newData = {
             id: Date.now(),
-            date, item, stock, sale,
+            date, 
+            month: date.substring(0, 7), // "2023-10" လအလိုက် သိမ်းတာ
+            item, stock, sale,
             remaining: stock - sale,
             revenue: sale * sellPrice,
             profit: (sellPrice - buyPrice) * sale
         };
 
-        dataList.unshift(newData); // အသစ်ကို ထိပ်ကပြရန်
+        dataList.unshift(newData);
         saveAndRender();
         
         // Reset inputs
         document.getElementById('item').value = '';
         document.getElementById('stock').value = '';
         document.getElementById('sale').value = '';
-        document.getElementById('buyPrice').value = '';
-        document.getElementById('sellPrice').value = '';
     }
 
     function saveAndRender() {
@@ -205,37 +206,39 @@
 
     function renderList() {
         const listDiv = document.getElementById('recordList');
+        const filterVal = document.getElementById('monthFilter').value;
         listDiv.innerHTML = '';
-        let totalRev = 0;
-        let totalProf = 0;
+        
+        let tQty = 0, tRev = 0, tProf = 0;
 
-        dataList.forEach(data => {
-            totalRev += data.revenue;
-            totalProf += data.profit;
+        // ရွေးထားတဲ့ လနဲ့ ကိုက်ညီတာကိုပဲ စစ်ထုတ်မယ်
+        const filteredData = dataList.filter(d => d.month === filterVal);
+
+        filteredData.forEach(data => {
+            tQty += data.sale;
+            tRev += data.revenue;
+            tProf += data.profit;
 
             listDiv.innerHTML += `
                 <div class="item-card">
                     <div class="card-row">
-                        <span class="item-name">${data.item}</span>
-                        <span class="date-label">${data.date}</span>
+                        <span style="font-weight:bold">${data.item}</span>
+                        <span style="font-size:12px; color:gray">${data.date}</span>
                     </div>
                     <div class="card-row stats">
-                        <span>Stock: ${data.stock} | ရောင်း: ${data.sale}</span>
-                        <span>လက်ကျန်: <b>${data.remaining}</b></span>
+                        <span>ရောင်းရ: ${data.sale} | ကျန်: ${data.remaining}</span>
+                        <span class="profit-text">+${data.profit.toLocaleString()} K</span>
                     </div>
-                    <div class="card-row" style="margin-top:10px; border-top: 1px dashed #eee; padding-top: 10px;">
-                        <span>သင့်ငွေ: ${data.revenue.toLocaleString()} Ks</span>
-                        <span class="profit-text">+${data.profit.toLocaleString()} Ks</span>
-                    </div>
-                    <div style="text-align: right; margin-top: 10px;">
+                    <div style="text-align: right; margin-top: 5px;">
                         <button class="delete-btn" onclick="deleteItem(${data.id})">ဖျက်မည်</button>
                     </div>
                 </div>
             `;
         });
 
-        document.getElementById('totalRevenue').innerText = totalRev.toLocaleString() + " K";
-        document.getElementById('totalProfit').innerText = totalProf.toLocaleString() + " K";
+        document.getElementById('totalQty').innerText = tQty.toLocaleString();
+        document.getElementById('totalRevenue').innerText = tRev.toLocaleString();
+        document.getElementById('totalProfit').innerText = tProf.toLocaleString();
     }
 
     function deleteItem(id) {
@@ -248,4 +251,3 @@
 
 </body>
 </html>
-
